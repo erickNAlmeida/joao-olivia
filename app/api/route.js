@@ -107,11 +107,11 @@ async function carregar() {
 
 // Salva com controle de versão para evitar sobrescritas.
 async function salvar(dados, etag) {
-  return put(
+  return await put(
     ARQUIVO,
     JSON.stringify(dados, null, 2),
     {
-      access: ACCESS,
+      access: "private",
       contentType: "application/json",
       allowOverwrite: true,
       ifMatch: etag
@@ -221,11 +221,14 @@ export async function POST(request) {
         });
 
       } catch (erro) {
-        if (erro instanceof BlobPreconditionFailedError) {
-          continue;
-        }
+        if (
+          erro instanceof BlobPreconditionFailedError ||
+          erro.name === "BlobPreconditionFailedError"
+          ) {
+            continue;
+          }
 
-        throw erro;
+          throw erro;
       }
     }
 
