@@ -1,0 +1,227 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fffafb;
+  color: #704653;
+  font-family: Arial, sans-serif;
+}
+
+.banner {
+  margin: 16px;
+  min-height: 350px;
+  border-radius: 30px;
+  background:
+    radial-gradient(ellipse at left, #fff2c6 0 15%, transparent 15.2%),
+    radial-gradient(ellipse at right bottom, #fff0bc 0 12%, transparent 12.2%),
+    #fbe8ee;
+  border: 1px solid #f4d9e1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 35px 15px;
+}
+
+.banner h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(35px, 6vw, 68px);
+  margin: 0;
+  color: #a44465;
+}
+
+.banner h1 i {
+  color: #c36b89;
+}
+
+.banner h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: clamp(30px, 5vw, 55px);
+  margin: 5px 0;
+  color: #c36b89;
+}
+
+.flores {
+  position: absolute;
+  font-size: 75px;
+}
+
+.flores1 {
+  top: 20px;
+  left: 25px;
+}
+
+.flores2 {
+  bottom: 15px;
+  right: 25px;
+}
+
+.conteudo {
+  padding: 30px 18px;
+}
+
+.etiqueta {
+  color: #bc5575;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.conteudo > h2 {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  font-size: clamp(25px, 3vw, 36px);
+}
+
+.aviso {
+  background: #fff6dc;
+  border: 1px solid #f4df9f;
+  border-left: 5px solid #e8bd43;
+  padding: 22px;
+  border-radius: 12px;
+  margin: 25px 0 34px;
+  line-height: 1.7;
+}
+
+.aviso strong {
+  color: #b34e70;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #f1dce3;
+  border-radius: 18px;
+  padding: 30px 22px 22px;
+  min-height: 265px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.card h3 {
+  font-family: Georgia, serif;
+  font-size: 25px;
+  font-weight: normal;
+  min-height: 55px;
+}
+
+button {
+  border: none;
+  border-radius: 11px;
+  padding: 17px;
+  background: #b85c7b;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #a54769;
+}
+
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.contador {
+  background: #fff4d5;
+  border: 1px solid #f4dfaa;
+  border-radius: 10px;
+  padding: 17px 8px;
+  color: #885b22;
+}
+
+.card small {
+  color: #9b7180;
+}
+
+.mensagem {
+  background: #fff0d5;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #0007;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal h2 {
+  font-family: Georgia, serif;
+  text-align: center;
+}
+
+.modal input {
+  padding: 13px;
+  border: 1px solid #e9cbd5;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.cancelar {
+  background: #eee;
+  color: #704653;
+}
+
+footer {
+  text-align: center;
+  padding: 35px 15px;
+  color: #a75a75;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px;
+}
+
+@media (max-width: 950px) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .grade {
+    grid-template-columns: 1fr;
+  }
+
+  .banner {
+    min-height: 260px;
+  }
+
+  .flores {
+    font-size: 40px;
+  }
+}

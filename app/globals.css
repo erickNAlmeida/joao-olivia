@@ -1,49 +1,347 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 * {
   box-sizing: border-box;
-  padding: 0;
+}
+
+:root {
+  --verde-principal: #91ad85;
+  --verde-escuro: #607d59;
+  --verde-claro: #dce9d5;
+  --verde-suave: #edf3e9;
+  --creme: #faf8ef;
+  --branco: #ffffff;
+  --texto: #56634f;
+  --amarelo: #e8dba7;
+  --borda: #dce7d5;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
   margin: 0;
+  background: var(--creme);
+  color: var(--texto);
+  font-family: Arial, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* BANNER PRINCIPAL */
+
+.banner {
+  margin: 16px;
+  min-height: 370px;
+  border-radius: 30px;
+  background:
+    radial-gradient(
+      ellipse at 15% 20%,
+      rgba(255,255,255,0.8) 0 8%,
+      transparent 8.5%
+    ),
+    radial-gradient(
+      ellipse at 85% 75%,
+      rgba(255,255,255,0.7) 0 10%,
+      transparent 10.5%
+    ),
+    linear-gradient(135deg, #e8f0e2, #d5e5ce, #f5f3e7);
+  border: 1px solid var(--borda);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 40px 20px;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.banner h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(35px, 6vw, 68px);
+  margin: 0;
+  color: var(--verde-escuro);
+  position: relative;
+  z-index: 2;
+}
+
+.banner h1 i {
+  color: var(--verde-principal);
+}
+
+.banner h2 {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: clamp(30px, 5vw, 52px);
+  margin: 8px 0;
+  color: #829d75;
+  position: relative;
+  z-index: 2;
+}
+
+/* NUVENS DECORATIVAS */
+
+.flores {
+  position: absolute;
+  font-size: 65px;
+  opacity: 0.85;
+  z-index: 1;
+  user-select: none;
+}
+
+.flores1 {
+  top: 25px;
+  left: 35px;
+}
+
+.flores2 {
+  bottom: 20px;
+  right: 35px;
+}
+
+/* CONTEÚDO */
+
+.conteudo {
+  padding: 35px 18px;
+  max-width: 1400px;
+  margin: auto;
+}
+
+.etiqueta {
+  color: var(--verde-escuro);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.conteudo > h2 {
+  font-family: Georgia, serif;
+  font-weight: normal;
+  font-size: clamp(25px, 3vw, 36px);
+  color: var(--verde-escuro);
+}
+
+/* AVISO */
+
+.aviso {
+  background: #f4f1df;
+  border: 1px solid #e6dfbd;
+  border-left: 5px solid #c6b879;
+  padding: 22px;
+  border-radius: 12px;
+  margin: 25px 0 34px;
+  line-height: 1.7;
+  color: var(--texto);
+}
+
+.aviso strong {
+  color: var(--verde-escuro);
+}
+
+/* GRADE DE PRESENTES */
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 30px 22px 22px;
+  min-height: 265px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 15px;
+  box-shadow: 0 5px 18px rgba(96, 125, 89, 0.07);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 9px 24px rgba(96, 125, 89, 0.13);
+}
+
+.card h3 {
+  font-family: Georgia, serif;
+  font-size: 25px;
+  font-weight: normal;
+  min-height: 55px;
+  color: var(--verde-escuro);
+}
+
+/* BOTÕES */
+
+button {
+  border: none;
+  border-radius: 11px;
+  padding: 17px;
+  background: var(--verde-principal);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--verde-escuro);
+}
+
+button:disabled {
+  background: #c5cec0;
+  cursor: not-allowed;
+}
+
+/* CONTADORES */
+
+.contador {
+  background: #f4f5e9;
+  border: 1px solid #e6e8d6;
+  border-radius: 10px;
+  padding: 17px 8px;
+  color: var(--verde-escuro);
+}
+
+.card small {
+  color: #82947b;
+}
+
+/* MENSAGENS */
+
+.mensagem {
+  background: var(--verde-claro);
+  border: 1px solid var(--borda);
+  padding: 15px;
+  border-radius: 10px;
+  color: var(--verde-escuro);
+}
+
+/* MODAL */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(55, 70, 50, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal {
+  background: var(--branco);
+  padding: 30px;
+  border: 1px solid var(--borda);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 12px 35px rgba(55, 70, 50, 0.18);
+}
+
+.modal h2 {
+  font-family: Georgia, serif;
+  text-align: center;
+  color: var(--verde-escuro);
+}
+
+.modal p {
+  text-align: center;
+}
+
+.modal label {
+  font-weight: bold;
+  color: var(--verde-escuro);
+}
+
+.modal input {
+  padding: 13px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fcfdf9;
+  color: var(--texto);
+  outline-color: var(--verde-principal);
+}
+
+.modal input:focus {
+  border-color: var(--verde-principal);
+}
+
+/* BOTÃO CANCELAR */
+
+.cancelar {
+  background: #edf0e9;
+  color: var(--verde-escuro);
+}
+
+.cancelar:hover {
+  background: #dce6d7;
+}
+
+/* RODAPÉ */
+
+footer {
+  text-align: center;
+  padding: 35px 15px;
+  color: var(--verde-escuro);
+  background: #edf2e8;
+  margin-top: 30px;
+}
+
+/* CARREGAMENTO */
+
+.loading {
+  text-align: center;
+  padding: 80px;
+  color: var(--verde-escuro);
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 950px) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .grade {
+    grid-template-columns: 1fr;
+  }
+
+  .banner {
+    min-height: 280px;
+    margin: 10px;
+    border-radius: 22px;
+  }
+
+  .flores {
+    font-size: 42px;
+  }
+
+  .flores1 {
+    top: 15px;
+    left: 12px;
+  }
+
+  .flores2 {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .conteudo {
+    padding: 25px 15px;
+  }
+
+  .card {
+    min-height: 230px;
   }
 }
