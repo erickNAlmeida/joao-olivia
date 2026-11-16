@@ -11,13 +11,13 @@
     {
       "id": 1,
       "nome": "Fraldas RN",
-      "quantidade": 10,
+      "quantidade": 20,
       "reservas": []
     },
     {
       "id": 2,
       "nome": "Fraldas P",
-      "quantidade": 10,
+      "quantidade": 20,
       "reservas": [
 
       ]
@@ -25,31 +25,31 @@
     {
       "id": 3,
       "nome": "Fraldas M",
-      "quantidade": 16,
+      "quantidade": 20,
       "reservas": []
     },
     {
       "id": 4,
       "nome": "Fraldas G - PANTS",
-      "quantidade": 15,
+      "quantidade": 20,
       "reservas": []
     },
     {
       "id": 5,
       "nome": "Fraldas XG - PANTS",
-      "quantidade": 10,
+      "quantidade": 20,
       "reservas": []
     },
     {
       "id": 6,
       "nome": "Fraldas XXG - PANTS",
-      "quantidade": 10,
+      "quantidade": 20,
       "reservas": []
     },
     {
       "id": 7,
       "nome": "Chave PIX",
-      "quantidade": 100,
+      "quantidade": 1000,
       "reservas": []
     }
   ]
