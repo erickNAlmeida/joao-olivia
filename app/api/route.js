@@ -1,17 +1,11 @@
 
 import { NextResponse } from "next/server";
-import {
-  get,
-  put,
-  BlobPreconditionFailedError
-} from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 import { readFile } from "fs/promises";
 import path from "path";
 
 
-
 const ARQUIVO = "joao-olivia/presentes.json";
-const ACCESS = "private";
 
 const dadosIniciais = {
   chaDeBebe: {
@@ -33,116 +27,61 @@ const dadosIniciais = {
   ]
 };
 
-// Lê os dados diretamente do Vercel Blob.
-async function carregarBlob() {
+// Consulta o arquivo no Blob sem utilizar cache.
+async function carregar() {
   const blob = await get(ARQUIVO, {
-    access: ACCESS
+    access: "private",
+    useCache: false
   });
 
-  if (!blob || blob.statusCode !== 200) {
-    return null;
+  if (blob && blob.statusCode === 200) {
+    return await new Response(blob.stream).json();
   }
 
-  const dados = await new Response(blob.stream).json();
-
-  return {
-    dados,
-    etag: blob.blob.etag
-  };
-}
-
-// Inicializa o Blob na primeira execução.
-// Aproveita o JSON existente no projeto, se disponível.
-async function carregar() {
-  const existente = await carregarBlob();
-
-  if (existente) {
-    return existente;
-  }
-
-  let dados = dadosIniciais;
-
+  // Importa os dados locais somente na primeira execução.
   try {
-    const caminho = path.join(
+    const arquivoLocal = path.join(
       process.cwd(),
       "data",
       "presentes.json"
     );
 
-    const conteudo = await readFile(caminho, "utf8");
-    dados = JSON.parse(conteudo);
+    const conteudo = await readFile(arquivoLocal, "utf8");
 
+    return JSON.parse(conteudo);
   } catch (erro) {
-    if (erro.code !== "ENOENT") {
-      throw erro;
-    }
-  }
-
-  try {
-    const blob = await put(
-      ARQUIVO,
-      JSON.stringify(dados, null, 2),
-      {
-        access: ACCESS,
-        contentType: "application/json"
-      }
-    );
-
-    return {
-      dados,
-      etag: blob.etag
-    };
-
-  } catch (erro) {
-    // Outra requisição pode ter inicializado o arquivo.
-    const atualizado = await carregarBlob();
-
-    if (atualizado) {
-      return atualizado;
-    }
-
-    throw erro;
+    if (erro.code !== "ENOENT") throw erro;
+    return dadosIniciais;
   }
 }
 
-// Salva com controle de versão para evitar sobrescritas.
-async function salvar(dados, etag) {
+// Grava sempre no mesmo arquivo.
+async function salvar(dados) {
   return await put(
     ARQUIVO,
     JSON.stringify(dados, null, 2),
     {
       access: "private",
       contentType: "application/json",
-      allowOverwrite: true,
-      ifMatch: etag
+      addRandomSuffix: false,
+      allowOverwrite: true
     }
   );
 }
 
-// GET - Consulta os presentes.
+// GET
 export async function GET() {
   try {
-    const { dados } = await carregar();
+    const dados = await carregar();
 
-    // Não expõe nomes dos convidados publicamente.
-    const resposta = {
-      ...dados,
-      presentes: dados.presentes.map(p => ({
-        ...p,
-        reservas: (p.reservas || []).map(r => ({
-          quantidade: r.quantidade
-        }))
-      }))
-    };
-
-    return NextResponse.json(resposta, {
+    return NextResponse.json(dados, {
       headers: {
-        "Cache-Control": "no-store"
+        "Cache-Control": "no-store, max-age=0"
       }
     });
 
   } catch (erro) {
-    console.error("Erro ao carregar presentes:", erro);
+    console.error("Erro ao carregar:", erro);
 
     return NextResponse.json(
       { erro: "Erro ao carregar presentes." },
@@ -151,19 +90,15 @@ export async function GET() {
   }
 }
 
-// POST - Reserva um presente.
+// POST
 export async function POST(request) {
   try {
-    const body = await request.json();
-
-    const id = Number(body.id);
-    const convidado = String(body.convidado || "").trim();
-    const quantidade = Number(body.quantidade);
+    const { id, convidado, quantidade } = await request.json();
 
     if (
       !Number.isSafeInteger(id) ||
-      !convidado ||
-      convidado.length > 120 ||
+      typeof convidado !== "string" ||
+      !convidado.trim() ||
       !Number.isSafeInteger(quantidade) ||
       quantidade < 1
     ) {
@@ -173,75 +108,58 @@ export async function POST(request) {
       );
     }
 
-    // Até 5 tentativas em caso de reservas simultâneas.
-    for (let tentativa = 0; tentativa < 5; tentativa++) {
-      const { dados, etag } = await carregar();
+    const dados = await carregar();
 
-      const presente = dados.presentes.find(
-        p => Number(p.id) === id
-      );
-
-      if (!presente) {
-        return NextResponse.json(
-          { erro: "Presente não encontrado." },
-          { status: 404 }
-        );
-      }
-
-      presente.reservas = presente.reservas || [];
-
-      const reservado = presente.reservas.reduce(
-        (total, r) => total + Number(r.quantidade || 0),
-        0
-      );
-
-      const disponivel = presente.quantidade - reservado;
-
-      if (quantidade > disponivel) {
-        return NextResponse.json(
-          {
-            erro: `Quantidade indisponível. Restam ${disponivel} unidade(s).`
-          },
-          { status: 409 }
-        );
-      }
-
-      presente.reservas.push({
-        convidado,
-        quantidade,
-        data: new Date().toISOString()
-      });
-
-      try {
-        await salvar(dados, etag);
-
-        return NextResponse.json({
-          sucesso: true,
-          presente
-        });
-
-      } catch (erro) {
-        if (
-          erro instanceof BlobPreconditionFailedError ||
-          erro.name === "BlobPreconditionFailedError"
-          ) {
-            continue;
-          }
-
-          throw erro;
-      }
-    }
-
-    return NextResponse.json(
-      { erro: "Muitas reservas simultâneas. Tente novamente." },
-      { status: 409 }
+    const presente = dados.presentes.find(
+      p => Number(p.id) === id
     );
 
+    if (!presente) {
+      return NextResponse.json(
+        { erro: "Presente não encontrado." },
+        { status: 404 }
+      );
+    }
+
+    presente.reservas = presente.reservas || [];
+
+    const reservado = presente.reservas.reduce(
+      (total, r) => total + Number(r.quantidade),
+      0
+    );
+
+    const disponivel = presente.quantidade - reservado;
+
+    if (quantidade > disponivel) {
+      return NextResponse.json(
+        {
+          erro: `Quantidade indisponível. Restam ${disponivel}.`
+        },
+        { status: 409 }
+      );
+    }
+
+    presente.reservas.push({
+      convidado: convidado.trim(),
+      quantidade,
+      data: new Date().toISOString()
+    });
+
+    await salvar(dados);
+
+    return NextResponse.json({
+      sucesso: true,
+      presente
+    });
+
   } catch (erro) {
-    console.error("Erro ao salvar presente:", erro);
+    console.error("ERRO REAL AO SALVAR:", erro);
 
     return NextResponse.json(
-      { erro: "Erro ao salvar presente." },
+      {
+        erro: "Erro ao salvar presente.",
+        detalhe: erro.message
+      },
       { status: 500 }
     );
   }
